@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from rest_framework.throttling import AnonRateThrottle
 
 # Create your views here
+
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,10 +12,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.shortcuts import redirect
 
+class LoginRateThrottle(AnonRateThrottle):
+    rate = '5/min'
+
 
 User = get_user_model()
 
 class CustomLoginView(APIView):
+    throttle_classes = [LoginRateThrottle]
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
