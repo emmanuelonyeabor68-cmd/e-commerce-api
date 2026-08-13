@@ -55,8 +55,6 @@ python manage.py runserver
 
 - Payment integration
 - Google OAuth login
-- Cloud image storage (Cloudinary)
 - Deployment (Render + Neon)
 - Google OAuth login
-- Cloud image storage (Cloudinary)
 - Deployment (Render + Neon)
