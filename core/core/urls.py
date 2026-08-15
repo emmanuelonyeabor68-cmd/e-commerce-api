@@ -9,4 +9,5 @@ urlpatterns = [
     path('api/v1/', include('products.urls')),
     path('api/v1/', include('orders.urls')),
     path('api/v1/', include('cart.urls')),
+    path('social-auth/', include('social_django.urls', namespace='social')),
 ]

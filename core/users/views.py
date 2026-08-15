@@ -3,7 +3,7 @@ from rest_framework.throttling import AnonRateThrottle
 
 # Create your views here
 
-
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -17,6 +17,32 @@ class LoginRateThrottle(AnonRateThrottle):
 
 
 User = get_user_model()
+
+def issue_jwt_and_redirect(backend, user, response, *args, **kwargs):
+    if not user:
+        return
+    if not user.is_active:
+        user.is_active = True
+        user.save()    
+    
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+    refresh_token = str(refresh)
+
+    frontend_url = os.environ.get('FRONTEND_URL', '127.0.0.1:3000')
+
+    response = redirect(f'https://{frontend_url}/dashboard?access={access_token}')
+    
+    response.set_cookie(
+        key='refresh_token',
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite='None',
+        max_age=7 * 24 * 60 * 60
+    )
+
+    return response
 
 class CustomLoginView(APIView):
     throttle_classes = [LoginRateThrottle]
