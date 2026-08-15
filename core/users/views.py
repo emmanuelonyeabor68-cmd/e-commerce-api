@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework.throttling import AnonRateThrottle
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 # Create your views here
 
 from django.shortcuts import redirect
@@ -77,8 +79,8 @@ class CustomLoginView(APIView):
             key='refresh_token',
             value=refresh_token,
             httponly=True,
-            secure=False,
-            samesite='Lax',
+            secure=True,
+            samesite='None',
             max_age=7 * 24 * 60 * 60
         )
 
