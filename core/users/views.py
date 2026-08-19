@@ -1,10 +1,4 @@
 from django.shortcuts import render
-from rest_framework.throttling import AnonRateThrottle
-import os
-from dotenv import load_dotenv
-load_dotenv()
-# Create your views here
-
 from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,6 +7,13 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.shortcuts import redirect
+from rest_framework.throttling import AnonRateThrottle
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+# Create your views here
+
 
 class LoginRateThrottle(AnonRateThrottle):
     rate = '5/min'
