@@ -80,8 +80,8 @@ class CustomLoginView(APIView):
             key='refresh_token',
             value=refresh_token,
             httponly=True,
-            secure=True,
-            samesite='None',
+            secure=False,
+            samesite='Lax',
             max_age=7 * 24 * 60 * 60
         )
 

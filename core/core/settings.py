@@ -187,7 +187,7 @@ STORAGES = {
 
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
-    'http://127.0.0.1:3000'
+    'http://localhost:3000'
 ).split(',')
 
 
