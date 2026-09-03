@@ -7,14 +7,8 @@ from .models import Cart, CartItem
 from .serializers import CartSerializer, CartItemSerializer
 
 
-class IsStaffOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:  # GET, HEAD, OPTIONS
-            return True
-        return request.user.is_authenticated and request.user.is_staff
-
-class CartView(viewsets.ViewSet):
-    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
+class CartView(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request):
         cart, _ = Cart.objects.get_or_create(user=request.user)

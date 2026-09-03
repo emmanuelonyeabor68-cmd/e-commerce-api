@@ -1,6 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,6 +7,9 @@ from .models import Order, OrderItem
 from .serializers import OrderSerializer
 from cart.models import Cart
 from rest_framework import viewsets
+
+# Create your views here.
+
 
 class IsStaffOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
