@@ -19,7 +19,7 @@ class IsStaffOrReadOnly(permissions.BasePermission):
 
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated, IsStaffOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post', 'patch', 'head', 'options'] #no full put or delete
 
 
@@ -31,6 +31,13 @@ class OrderViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def checkout(self, request):
         cart, _ = Cart.objects.get_or_create(user=request.user)
+        shipping_address = request.data.get('shipping_address')
+        phone_number = request.data.get('phone_number')
+
+        if not shipping_address or not phone_number:
+            return Response(
+                {'error': 'Shipping address and phone number are required'}, status=400
+            )
 
         with transaction.atomic():
             items = (
@@ -44,26 +51,32 @@ class OrderViewSet(viewsets.ModelViewSet):
 
             # validate stock BEFORE creating anything
             for item in items:
-                items.products.refresh_from_db()
+                item.product.refresh_from_db()
                 if item.quantity > item.product.stock:
                     return Response(
                         {'error': f'Not enough stock for {item.product.name}'}, status=400
                     )
 
-                total = sum(item.product.price * item.quantity for item in items)
-                order = Order.objects.create(user=request.user, total=total)
+            # everything below is now OUTSIDE the validation loop — runs once
+            total = sum(item.product.price * item.quantity for item in items)
+            order = Order.objects.create(
+                user=request.user,
+                total=total,
+                shipping_address=shipping_address,
+                phone_number=phone_number,
+            )
 
-                for item in items:
-                    OrderItem.objects.create(
-                        order=order,
-                        product=item.product,
-                        product_name=item.product.name,
-                        price=item.product.price,
-                        quantity=item.quantity,
-                    )
-                    item.product.stock -= item.quantity
-                    item.product.save()
+            for item in items:
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    product_name=item.product.name,
+                    price=item.product.price,
+                    quantity=item.quantity,
+                )
+                item.product.stock -= item.quantity
+                item.product.save()
 
-                items.delete()  # clear cart
+            items.delete()
 
-            return Response(OrderSerializer(order).data, status=201)
+        return Response(OrderSerializer(order).data, status=201)
