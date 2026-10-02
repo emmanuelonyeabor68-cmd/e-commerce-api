@@ -163,10 +163,12 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True, 
 }
 
-
 DJOSER = {
-    'LOGIN_FIELD': 'email',               
-    'SERIALIZERS': {},
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+    },
 }
 
 CLOUDINARY_STORAGE = {
