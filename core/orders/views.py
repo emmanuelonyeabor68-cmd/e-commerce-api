@@ -64,6 +64,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 total=total,
                 shipping_address=shipping_address,
                 phone_number=phone_number,
+                product_image=item.product.image,
             )
 
             for item in items:
@@ -71,6 +72,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                     order=order,
                     product=item.product,
                     product_name=item.product.name,
+                    product_image=item.product.image,
                     price=item.product.price,
                     quantity=item.quantity,
                 )
