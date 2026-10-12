@@ -21,6 +21,18 @@ class LoginRateThrottle(AnonRateThrottle):
 
 User = get_user_model()
 
+def save_google_full_name(backend, user=None, response=None, *args, **kwargs):
+    if not user or backend.name != "google-oauth2":
+        return
+
+    full_name = response.get("name", "").strip()
+
+    if full_name and not user.full_name:
+        user.full_name = full_name
+        user.save(update_fields=["full_name"])
+
+    return {"user": user}
+
 def issue_jwt_and_redirect(backend, user, response, *args, **kwargs):
     if not user:
         return
