@@ -34,7 +34,7 @@ def issue_jwt_and_redirect(backend, user, response, *args, **kwargs):
 
     frontend_url = os.environ.get('FRONTEND_URL', '127.0.0.1:3000')
 
-    response = redirect(f'https://{frontend_url}/dashboard?access={access_token}')
+    response = redirect(f'{frontend_url}/dashboard?access={access_token}')
     
     response.set_cookie(
         key='refresh_token',
