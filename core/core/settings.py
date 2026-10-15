@@ -222,8 +222,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
-    'core.users.views.save_google_full_name',
-    'core.users.views.issue_jwt_and_redirect',
+    'users.views.save_google_full_name',
+    'users.views.issue_jwt_and_redirect',
 )
 
 
